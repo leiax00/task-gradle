@@ -1,0 +1,4 @@
+rootProject.name = 'gradle-block'
+include 'm1'
+include 'm2'
+

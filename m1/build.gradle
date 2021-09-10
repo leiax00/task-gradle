@@ -1,0 +1,6 @@
+//group 'cn.leiax00'
+//version '1.0-SNAPSHOT'
+specific4M1.dependsOn(subprojectsTask)
+specific4M1.doLast {
+    println "-- $project.name: do self thing after root defined..."
+}

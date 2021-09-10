@@ -1,0 +1,51 @@
+group 'cn.leiax00'
+version '1.0-SNAPSHOT'
+
+// 配置阶段执行输出: Hello World!!!
+task helloWorld {
+    println 'Hello World!!!'
+}
+tasks.create("helloWorld1").configure { println 'Hello World!!!' }
+
+// =================================
+// 执行阶段输出: doFirst -> doLast
+task helloWorld4Exec {
+    doLast {
+        println 'last: Hello World!!!'
+    }
+    doFirst {
+        println 'first: Hello World!!!'
+    }
+}
+// 等效
+tasks.create("helloWorld4Exec1").doFirst { println 'last: Hello World!!!' }.doLast { println 'first: Hello World!!!' }
+
+// =================================
+// 所有项目配置相同的任务, 设置公共属性🐮
+allprojects {
+    group = 'cn.leiax00'
+    version = 'v1.0.0'
+    task allProjectsTask {
+        doLast { task ->
+            println "allprojects: I'm $task.project.group.$task.project.name:$task.project.version"
+        }
+    }
+}
+
+// =================================
+// 所有子项目配置相同任务
+subprojects {
+    task subprojectsTask {
+        doLast { task ->
+            println "- subprojects: I'm $task.project.group.$task.project.name:$task.project.version"
+        }
+    }
+}
+
+// =================================
+// 在根工程中指定特定工程的配置
+project(':m1').tasks.create("specific4M1") {
+    doLast {
+        println "- $project.name, I'm the specific project."
+    }
+}
