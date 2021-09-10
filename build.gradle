@@ -35,6 +35,12 @@ allprojects {
 // =================================
 // 所有子项目配置相同任务
 subprojects {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+//        testCompile "junit:junit:4.12"
+    }
     task subprojectsTask {
         doLast { task ->
             println "- subprojects: I'm $task.project.group.$task.project.name:$task.project.version"
@@ -44,8 +50,49 @@ subprojects {
 
 // =================================
 // 在根工程中指定特定工程的配置
+// 一个工程的路径为：以冒号（: 它代表了根工程）开始，再加上工程的名称。例如“:m1”。
+// 一个任务的路径为：工程路径加上任务名称，例如“:m1:specific4M1”.
 project(':m1').tasks.create("specific4M1") {
     doLast {
         println "- $project.name, I'm the specific project."
     }
 }
+
+// =================================
+// 任务依赖
+task t2 {
+    println "$name: Hello world!"
+}
+
+task t1(dependsOn: t2) {
+    println "$name: Hello world!"
+}
+
+// =================================
+// 延迟依赖
+task t3(dependsOn: "t4") {
+    doLast {
+        println "$name: Hello world!"
+    }
+}
+
+task t4 {
+    doLast {
+        println "$name: Hello world!"
+    }
+}
+
+// =================================
+// 动态任务
+4.times { counter -> tasks.create("task$counter").configure { println "I'm task number $counter" } }
+//task0.dependsOn(["task2", "task3"])
+task0.dependsOn task2, task3
+
+// =================================
+// 通过 API 进行任务之间的通信 - 增加任务行为
+task addTaskAction {
+    println '666666'
+}
+addTaskAction.doFirst { println 'this is first...' }
+addTaskAction.doLast { println 'this is last...' }
+addTaskAction { println 'this is configure...' }
